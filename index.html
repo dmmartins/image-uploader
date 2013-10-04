@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Image Upload Demo</title>
+
+        <style type="text/css">
+            .thumbnail {
+                width: 100px;
+                margin: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <form action="." method="post" enctype="multipart/form-data">
+            <h2>Image Uploader</h2>
+            <p><label for="image_id">Image:</label><input type="file" name="images[]" id="images_id" multiple /></p>
+            <div id="list"></div>
+            <p><button type="submit">Submit</button></p>
+        </form>
+
+        <script type="text/javascript">
+            function handleFileSelect(evt) {
+                var files = evt.target.files; // FileList object
+
+                document.getElementById('list').innerHTML = '';
+
+                // files is a FileList of File objects. List some properties.
+                var output = [];
+                for (var i = 0, f; f = files[i]; i++) {
+                    var reader = new FileReader();
+
+                    // Closure to capture the file information.
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            var image = new Image();
+                            image.title = escape(theFile.name);
+                            image.src = e.target.result;
+                            image.className = 'thumbnail';
+                            document.getElementById('list').insertBefore(image, null);
+                        };
+                    })(f);
+
+                    // Read in the image file as a data URL.
+                    reader.readAsDataURL(f);
+                }
+            }
+
+            window.onload = (function() {
+                document.getElementById('images_id').addEventListener('change', handleFileSelect, false);
+            })();
+        </script>
+    </body>
+</html>
